@@ -3,18 +3,13 @@ from pprint import pprint
 
 
 def login():
-    '''logs in the user using OAuth 2.0 and returns a reddit object for use'''
-    user_agent = 'osx:saved_posts.myredditapp:v0.1 (by /u/idreamapple)'
-    app_id = 'Vu9L6EuH0JZ_Rw'
-    app_secret = '1_Dh3K2tmwsZ_p34vi99ShigB_I'
+    '''logs in the user using OAuth 2.0 and returns a redditor object for use'''
+    user_agent = 'osx:reddit_saved_posts_search: v0.1 (by /u/idreamapple)'
     # app_scopes = 'account creddits edit flair history identity livemanage
     # modconfig modcontributors modflair modlog modothers modposts modself
     # modwiki mysubreddits privatemessages read report save submit subscribe
     # vote wikiedit wikiread'
-    r = praw.Reddit(user_agent=user_agent)
-    r.set_oauth_app_info(client_id=app_id, client_secret=app_secret,
-                         redirect_uri='http://127.0.0.1:65010/authorize_callback')
-    r.refresh_access_information('29732838-7CJKQ76NDEnf__LTzrVuYgMlrlA')
+    r = praw.Reddit('mysettings', user_agent=user_agent)
     return r
 
 
