@@ -62,7 +62,11 @@ def main():
 
     while(True):
         choice = int(input(
-            '\nSearch for [1] saved posts, [2] saved comments, [3] saved link posts: '))
+            '\nSearch for [1] saved posts, [2] saved comments, [3] saved link posts [4] Exit: '))
+        if choice == 4: # exit the script
+            print('Thank you for using this script. I hope to see you again soon :)')
+            break
+
         text_to_search = input('\nEnter the text to search: ')
 
         if choice == 1:
