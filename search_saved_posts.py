@@ -1,23 +1,19 @@
 import praw
+import prawcore
 import webbrowser
-import bcrypt
-from getpass import getpass
-
-
-def re_auth_check():
-    '''checks if the user credentials already exist'''
-    f = open('user_credentials')
-
 
 
 def login():
     '''logs in the user using OAuth 2.0 and returns a redditor object for use'''
     username = input('Username: ')
-    # password = getpass(prompt='Password: ')
     user_agent = 'reddit_saved_posts_search: v1.0 (for /u/{})'.format(
         username)
     r = praw.Reddit('mysettings', user_agent=user_agent)
-    return r.user.me()
+    try:
+        return r.user.me()
+    except prawcore.exceptions.Forbidden:
+        print('\nIt seems your credentials are invalid. Please check whether your praw.ini file is properly setup.')
+        return None
 
 
 def search(text, saved_posts):
@@ -35,6 +31,10 @@ def open_in_browser(url):
 
 def main():
     redditor = login()
+    if redditor == None:
+        print('\nStopping script...')
+        return  # exit the script if unable to login
+
     print('Welcome /u/{}. I will help you search through your saved posts on reddit :)'.format(redditor))
     saved = redditor.saved(limit=None)
 
@@ -67,7 +67,7 @@ def main():
     while(True):
         choice = int(input(
             '\nSearch for [1] saved posts, [2] saved comments, [3] saved link posts [4] Exit: '))
-        if choice == 4: # exit the script
+        if choice == 4:  # exit the script
             print('Thank you for using this script. I hope to see you again soon :)')
             break
 
@@ -88,38 +88,46 @@ def main():
 
         post_number = int(input(
             '\nEnter the post number[0 to return to search] to open in your default browser: '))
-        if post_number > len(search_results):
-            print('\nPlease enter a valid choice.')
-            continue
-
         if post_number == 0:
             continue
         else:
             if choice == 1:
                 for post in saved_posts:
-                    if post.id == search_results[post_number]:
-                        open_in_browser(post.url)
+                    try:
+                        if post.id == search_results[post_number]:
+                            open_in_browser(post.url)
+                            break
+                    except KeyError:
+                        print('Please enter a valid post number.')
                         break
             elif choice == 2:
                 for post in saved_comments:
-                    if post.id == search_results[post_number]:
-                        open_in_browser(post.link_url + post.id)
+                    try:
+                        if post.id == search_results[post_number]:
+                            open_in_browser(post.link_url + post.id)
+                            break
+                    except KeyError:
+                        print('Please enter a valid post number.')
                         break
             elif choice == 3:
                 for post in saved_links:
-                    if post.id == search_results[post_number]:
-                        link_choice = int(
-                            input('\n[1] to open link in browser, [2] to open reddit post in browser: '))
-                        if link_choice == 1:
-                            open_in_browser(post.url)
-                            break
-                        elif link_choice == 2:
-                            open_in_browser(
-                                'https://www.reddit.com' + post.permalink)
-                            break
-                        else:
-                            print('\nPlease enter a valid choice.')
-                            break
+                    try:
+                        if post.id == search_results[post_number]:
+                            link_choice = int(
+                                input('\n[1] to open link in browser, [2] to open reddit post in browser: '))
+                            if link_choice == 1:
+                                open_in_browser(post.url)
+                                break
+                            elif link_choice == 2:
+                                open_in_browser(
+                                    'https://www.reddit.com' + post.permalink)
+                                break
+                            else:
+                                print('\nPlease enter a valid choice.')
+                                break
+                    except KeyError:
+                        print('Please enter a valid post number.')
+                        break
 
 
 if __name__ == '__main__':
