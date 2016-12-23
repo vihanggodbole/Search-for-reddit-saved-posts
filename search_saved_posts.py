@@ -1,27 +1,31 @@
 import praw
 import webbrowser
+import bcrypt
 from getpass import getpass
+
+
+def re_auth_check():
+    '''checks if the user credentials already exist'''
+    f = open('user_credentials')
+
 
 
 def login():
     '''logs in the user using OAuth 2.0 and returns a redditor object for use'''
     username = input('Username: ')
-    password = getpass(prompt='Password: ')
+    # password = getpass(prompt='Password: ')
     user_agent = 'reddit_saved_posts_search: v1.0 (for /u/{})'.format(
         username)
-    r = praw.Reddit('mysettings', user_agent=user_agent,
-                    username=username, password=password)
+    r = praw.Reddit('mysettings', user_agent=user_agent)
     return r.user.me()
 
 
 def search(text, saved_posts):
-    i = 1
     searched_posts = {}
-    for post_id in saved_posts:
+    for index, post_id in enumerate(saved_posts):
         if text.lower() in saved_posts[post_id].lower():
-            print('\n{}. {}'.format(i, saved_posts[post_id]))
-            searched_posts[i] = post_id
-            i += 1
+            print('\n{}. {}'.format(index + 1, saved_posts[post_id]))
+            searched_posts[index + 1] = post_id
     return searched_posts
 
 
