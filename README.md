@@ -14,7 +14,11 @@ Once you obtain your keys, create a praw.ini file like this
 
 > client_secret = YOUR_SECRET_APP_ID
 
-Place it in the appropriate location according to your operating system as given [here](https://praw.readthedocs.io/en/latest/getting_started/configuration/prawini.html).
+> password = YOUR_PASSWORD
+
+> username = YOUR_USERNAME
+
+Place it in your local working directory.
 
 ##Running the script
 The script is directly run from the terminal.
