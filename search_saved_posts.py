@@ -104,6 +104,7 @@ def main():
                 for post in saved_comments:
                     try:
                         if post.id == search_results[post_number]:
+                            print(vars(post))
                             open_in_browser(post.link_url + post.id)
                             break
                     except KeyError:
